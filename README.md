@@ -50,8 +50,10 @@ Baseline foundation model (zero-shot) and best (highest dice score on the valida
 - visualisation script uses marching cubes to generate a mesh from the voxel segmentation as plotting the voxels directly is extremely slow for large volumes, which may lead to artifacts in the mesh.
 - The hyperparameters used for fine-tuning were not extensively optimized, and further tuning may yield better results.
   - Tested orders of magnitude (1e-5 - 1e-3) for learning rate, as well as the use of cosine annealing for each.
-- The each component of the data augmentation pipeline was not individually evaluated on the ImageCAS dataset, and further augmentation strategies may improve performance.
+- Each component of the data augmentation pipeline was not individually evaluated on the ImageCAS dataset, and further augmentation strategies may improve performance.
   - Changes were made to how the initial crop was applied as by default it was only cropping to the center of the image, which was not suitable for the ImageCAS dataset.
+- Metric calculation during testing and validation is quite slow, so changing the implementation of metric calculation to allow for batched computation and switching to using 
+[torchmetrics](https://lightning.ai/docs/torchmetrics/stable/) to enable faster computation of metrics during testing and validation would be a good direction with more time.
 
 # Main README
 
