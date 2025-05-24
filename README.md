@@ -3,9 +3,10 @@
 This repository contains the code and data for vesselFM, a foundation model for universal 3D blood vessel segmentation. The model is designed to perform *zero* to few-shot segmentation on unseen domains, leveraging a combination of real, synthetic, and domain-randomized data.
 
 - This foundation model was picked for its ability to generalize across diverse datasets and adapt to perform well in low data scenarios, achieving state-of-the-art results on several benchmarks.
+- The foundation model architecture is a [DynUNet](https://docs.monai.io/en/0.3.0/_modules/monai/networks/nets/dynunet.html), with specification defined in `/vesselfm/seg/configs/model/dyn_unet_base.yaml`.
 - This code was used as it provided a comprehensive framework for training, evaluating, and doing inference with the vesselFM model on external datasets.
 - The dataset picked was [ImageCAS](https://www.kaggle.com/datasets/xiaoweixumedicalai/imagecas/data?select=Coronary_Segmentation_deep_learning), a large and diverse dataset bentchmark for coronary artery segmentation, based on CTA scans.
-- The main libraries used include PyTorch & PyTorch Lightning for model training and evaluation and Plotly & Matplotlib for visualization. Additional libraries have been added to the requirements file to support data processing and visualization.
+- The main libraries used include PyTorch & [PyTorch Lightning](https://lightning.ai/docs/pytorch/LTS/common/lightning_module.html) for model training and evaluation and Plotly & Matplotlib for visualization. Additional libraries have been added to the requirements file to support data processing and visualization.
 
 - The specific enhancements applied to the pretrained model include:
   - Modifications to the image augmentation pipeline (quite good out of the box) to better suit the characteristics of the ImageCAS dataset.
@@ -28,7 +29,7 @@ Baseline foundation model (zero-shot) and best (highest dice score on the valida
 
 ### To reproduce the results
 - Follow the instructions in the [main README](README.md) to set up the environment and install dependencies.
-- Download the foundation model weights.
+- Download the foundation [model weights](https://huggingface.co/bwittmann/vesselFM/tree/main).
 - Follow the instructions in the [ImageCAS dataset preparation](ImageCASDataSetPrep.md) to prepare the ImageCAS dataset.
 - Run the training script with the provided configuration file/s (changing the paths as necessary) for fine-tuning on the ImageCAS dataset:
   - [train yaml](./vesselfm/seg/configs/train.yaml)
@@ -36,6 +37,14 @@ Baseline foundation model (zero-shot) and best (highest dice score on the valida
   - [inference yaml](./vesselfm/seg/configs/inference.yaml)
 
   - Follow the instructions in the [vesselfm/seg](vesselfm/seg) directory for more details on training and inference.
+    - for training after activating the conda environment, run:
+      ```bash
+      python ./vesselfm/seg/finetune.py data=eval_smile num_shots=800
+      ```
+    - for inference, run:
+      ```bash
+      python ./vesselfm/seg/inference.py
+      ```
   - The checkpoint of the best model weigths are included in the repository in the releases to the right (due to large file size ~300mb) `finetune_800shot_SMILE_vesselfm_step-1340_val_DiceMetric-0.77.ckpt`.
 - Use the provided [visualisation script](visualise_ImageCAS.ipynb) to visualize the results on the ImageCAS dataset (test subset) with an interactive 3D plot of the segmentation.
   - The script also includes code to save STL files for the segmented volumes, which can be used for further analysis or visualization in other software.
