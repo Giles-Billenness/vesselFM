@@ -36,7 +36,7 @@ Baseline foundation model (zero-shot) and best (highest dice score on the valida
   - [inference yaml](./vesselfm/seg/configs/inference.yaml)
 
   - Follow the instructions in the [vesselfm/seg](vesselfm/seg) directory for more details on training and inference.
-  - The checkpoint of the best model weigths are included in the repository at `finetune_800shot_SMILE_vesselfm_step-1340_val_DiceMetric-0.77.ckpt`.
+  - The checkpoint of the best model weigths are included in the repository in the releases to the right (due to large file size ~300mb) `finetune_800shot_SMILE_vesselfm_step-1340_val_DiceMetric-0.77.ckpt`.
 - Use the provided [visualisation script](visualise_ImageCAS.ipynb) to visualize the results on the ImageCAS dataset with an interactive 3D plot of the segmentation.
   - The script also includes code to save STL files for the segmented volumes, which can be used for further analysis or visualization in other software.
   - Additional code to load said STL files and visualize them in 3D. STL files from one case (6) are provided in `./meshes_stl/`.
