@@ -4,4 +4,6 @@ defaults:
 
 SMILE:
   sample_prop: 1
-  path: /path/to/eval_set/SMILE #TODO
+  path: C:\Users\giles\Github\vesselFM\data\d_real\ImageCAS-split
+  #C:\Users\giles\Github\vesselFM\data\d_real\1-200-ImageCAS
+  # /path/to/eval_set/SMILE #TODO

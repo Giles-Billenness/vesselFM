@@ -7,7 +7,10 @@ transforms:
     - EnsureChannelFirstd:
         keys: ["Image", "Mask"]
         channel_dim: "no_channel"
-    - CenterSpatialCropd:
+    # - CenterSpatialCropd: # why limit the input volume location? allow for zooms etc for broader distribution.
+    #     keys: ["Image", "Mask"]
+    #     roi_size: ${input_size}
+    - RandSpatialCropd: # instead crop randomly within the image instead of just in the center
         keys: ["Image", "Mask"]
         roi_size: ${input_size}
     - ScaleIntensityd:
@@ -55,7 +58,7 @@ transforms:
         keys: ["Image"]
         prob: 0.3
         num_control_points: [5, 10]
-    - CenterSpatialCropd:
+    - CenterSpatialCropd: #here we crop to fit the input size anyway. Ensures that the dims are correct before tensor conversion
         keys: ["Image", "Mask"]
         roi_size: ${input_size}
     - ToTensord:

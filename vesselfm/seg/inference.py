@@ -25,9 +25,16 @@ logger = logging.getLogger(__name__)
 def load_model(cfg, device):
     try:
         logger.info(f"Loading model from {cfg.ckpt_path}.")
-        ckpt = torch.load(Path(cfg.ckpt_path), map_location=device, weights_only=True)
-    except:
-        logger.info(f"Loading model from Hugging Face.")
+        ckpt = torch.load(Path(cfg.ckpt_path), map_location=device, weights_only=False)
+        # logger.info(f"Model loaded {ckpt.keys()}.")
+        ckpt = ckpt['state_dict']
+        #remove model prefix
+        ckpt = {k.replace("model.", ""): e for k, e in ckpt.items() if "model" in k}
+
+    except Exception as e:
+        #log error with description
+        logger.error(f"Error loading model from {cfg.ckpt_path}: {e}")
+        logger.info("Loading model from Hugging Face.")
         hf_hub_download(repo_id='bwittmann/vesselFM', filename='meta.yaml') # required to track downloads
         ckpt = torch.load(
             hf_hub_download(repo_id='bwittmann/vesselFM', filename='vesselFM_base.pt'),

@@ -50,7 +50,7 @@ class PLModule(lightning.LightningModule):
         image, mask = batch
         pred_mask = self.model(image)
         loss = self.loss(pred_mask, mask)
-        self.log(f"train_loss", loss.item(), logger=(self.rank == 0))
+        self.log("train_loss", loss.item(), logger=(self.rank == 0))
         return loss
 
     def validation_step(self, batch, batch_idx):
@@ -112,11 +112,22 @@ class PLModuleFinetune(PLModule):
             loss = self.loss(pred_mask, mask)
             self.log(f"{self.dataset_name}_test_loss", loss.item())
 
-            metrics = self.evaluator.estimate_metrics(
-                pred_mask.sigmoid().squeeze(), mask.squeeze(), threshold=self.prediction_threshold
-            )
-            for name, value in metrics.items():
-                value = value.item() if isinstance(value, (torch.Tensor, np.ndarray)) else value
-                self.log(f"{self.dataset_name}_test_{name}", value)
+            try:
+                metrics = self.evaluator.estimate_metrics(
+                    pred_mask.sigmoid().squeeze(), mask.squeeze(), threshold=self.prediction_threshold
+                )
+                for name, value in metrics.items():
+                    value = value.item() if isinstance(value, (torch.Tensor, np.ndarray)) else value
+                    self.log(f"{self.dataset_name}_test_{name}", value)
+
+            except ValueError as e:
+                if "Only one class present in y_true" in str(e):
+                    logger.warning(
+                        f"Skipping metrics calculation for batch {batch_idx} in test_step "
+                        f"for dataset {self.dataset_name} due to: {e}"
+                    )
+                else:
+                    # Re-raise other ValueErrors not related to this specific issue
+                    raise e
 
         return loss

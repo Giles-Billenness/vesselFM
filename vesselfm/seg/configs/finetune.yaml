@@ -4,20 +4,20 @@ defaults:
   - _self_
 
 num_shots: 0
-lr: 0.00001
+lr: 0.001
 devices: [0]
 run_name: vesselfm
-path_to_chkpt: /path/to/pretrained_ckpt #TODO
-chkpt_folder:  /path/where/to/store/ckpts #TODO
+path_to_chkpt: C:\Users\giles\Github\vesselFM\vesselFM_base.pt #TODO
+chkpt_folder:  C:\Users\giles\Github\vesselFM\data\ChptImageCAS #TODO
 
 dataloader:
   shuffle: False
 
 trainer:
   lightning_trainer:
-    val_check_interval: 200
-    max_steps: 1200
-    max_epochs: 1
+    val_check_interval: 134 #34 #200 #Fit to total number of batchs to happen at the end of each epoch
+    # max_steps: 1200 #only stop on epoch
+    max_epochs: 10
 
   lightning_module:
     _target_: vesselfm.seg.module.PLModuleFinetune
@@ -28,12 +28,12 @@ trainer:
 
     scheduler_configs:
       cosine_annealing_few:
-        interval: step
-        frequency: 10
+        interval: epoch #step
+        # frequency: 10 #enable to have LR fixed
         scheduler:
           _target_: torch.optim.lr_scheduler.CosineAnnealingLR
           _partial_: True
-          T_max: 1000
+          T_max: 10 #1000
           eta_min: 0.0000001
           last_epoch: -1
 

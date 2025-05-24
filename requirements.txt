@@ -16,3 +16,8 @@ tifffile
 pylibtiff
 nibabel
 gpustat
+ipywidgets
+ipympl
+plotly
+nbformat>=4.2.0
+numpy-stl

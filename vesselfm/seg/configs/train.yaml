@@ -12,8 +12,8 @@ num_classes: 1
 
 # training
 seed: 404
-lr: 0.0001
-batch_size: 8
+# lr: 0.0001
+batch_size: 6
 eval_path: /path/to/eval_set_pretrain #TODO
 path_to_chkpt: null
 devices: [0]
@@ -21,15 +21,15 @@ devices: [0]
 # logging
 run_name: vesselfm
 wandb_project: vesselfm
-chkpt_folder: /path/where/to/store/chkpts #TODO
+chkpt_folder: C:\Users\giles\Github\vesselFM\data\ChptImageCAS # /path/where/to/store/chkpts #TODO
 offline: False
 
 # dataloader
 dataloader:
   _target_: "torch.utils.data.DataLoader"
   _partial_: True
-  num_workers: 16
-  prefetch_factor: 3
+  num_workers: 6 #16
+  # prefetch_factor: 3
   batch_size: ${batch_size}
   pin_memory: True
   persistent_workers: True

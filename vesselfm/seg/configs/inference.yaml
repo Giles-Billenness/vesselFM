@@ -4,20 +4,20 @@ defaults:
   - _self_
 
 # i/o
-image_path: /path/to/image_folder #TODO
+image_path: C:\Users\giles\Github\vesselFM\data\d_real\ImageCAS-Raw\img #TODO
 image_file_ending: nii.gz
-output_folder: /path/to/output_folder # TODO
+output_folder: C:\Users\giles\Github\vesselFM\data\inference\basefoundation\nopostp # TODO
 file_app: ""
 
 mask_path: null
 round_to: 2
 
 # model & ckpt
-device: cuda:0
-ckpt_path: /path/to/ckpt.pt
+device: cuda:0 #cpu #cuda:0
+ckpt_path: C:\Users\giles\Github\vesselFM\data\ChptImageCAS\vesselfm\finetune_800shot_SMILE_vesselfm-1e-3LRDecay-randCrop\finetune_800shot_SMILE_vesselfm_step-1340_val_DiceMetric-0.77.ckpt #/path/to/ckpt.pt
 
 # sliding window inferer
-batch_size: 16
+batch_size: 1 #6
 patch_size: [128, 128, 128]
 overlap: 0.5
 mode: "constant"

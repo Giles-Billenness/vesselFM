@@ -18,6 +18,7 @@ from vesselfm.seg.utils.evaluation import Evaluator
 warnings.filterwarnings("ignore")
 logger = logging.getLogger(__name__)
 
+#python ./vesselfm/seg/finetune.py data=eval_smile
 
 @hydra.main(config_path="configs", config_name="finetune", version_base="1.3.2")
 def main(cfg):
@@ -46,7 +47,7 @@ def main(cfg):
         auto_insert_metric_name=True,
         save_last=True
     )
-    checkpoint_callback.CHECKPOINT_EQUALS_CHAR = ":"
+    checkpoint_callback.CHECKPOINT_EQUALS_CHAR = "-"
     checkpoint_callback.CHECKPOINT_NAME_LAST = run_name + "_last"
 
     # init trainer
@@ -61,7 +62,11 @@ def main(cfg):
     # init dataloader
     train_dataset = UnionDataset(cfg.data, "train", finetune=True)
     train_dataset = Subset(train_dataset, range(cfg.num_shots))
-    random_sampler = RandomSampler(train_dataset, replacement=True, num_samples=int(1e6))
+    
+    # random_sampler = RandomSampler(train_dataset, replacement=True, num_samples=int(1e6))#HERE!!!!!!!!!!!!!
+    # Setting replacement to false effectively ensures the samples are seen once per epoch in a random order each time
+    random_sampler = RandomSampler(train_dataset, replacement=False)
+    
     train_loader = hydra.utils.instantiate(cfg.dataloader)(dataset=train_dataset, sampler=random_sampler)
     logger.info(f"Train dataset size mapped to {len(train_dataset)} samples")
 
@@ -77,8 +82,12 @@ def main(cfg):
     model = hydra.utils.instantiate(cfg.model)
     if cfg.path_to_chkpt is not None:
         chkpt = torch.load(cfg.path_to_chkpt, map_location=f'cuda:{cfg.devices[0]}')
-        model_chkpt = {k.replace("model.", ""): e for k, e in chkpt["state_dict"].items() if "model" in k}
-        model.load_state_dict(model_chkpt)
+        #debug
+        # logger.info(f"chpt keys: {chkpt.keys()}")
+        # print()
+        # model_chkpt = {k.replace("model.", ""): e for k, e in chkpt["state_dict"].items() if "model" in k}
+        # model.load_state_dict(model_chkpt)
+        model.load_state_dict(chkpt)
 
     # init lightning module
     evaluator = Evaluator()
